@@ -8,7 +8,7 @@ void Battery::init(void) {
   pinMode(LED_BAT_LOW, OUTPUT);
   digitalWrite(LED_BAT_LOW, LOW);
 
-  add_repeating_timer_us(-10000, bat_voltage_timer_callback, NULL, &bat_voltage_timer); 
+  add_repeating_timer_ms(10, bat_voltage_timer_callback, NULL, &bat_voltage_timer); 
 }
 
 //-------------------------------------------------------------------------
@@ -39,7 +39,7 @@ bool Battery::run_adc(void) {
       case 5:      // request or confirm shutdown
         request_shutdown();
         break;
-      case 2000:   // force shutdown
+      case 1000:   // force shutdown
         digitalWrite(POWER_ON, LOW);
         break;
     }

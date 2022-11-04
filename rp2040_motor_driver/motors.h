@@ -15,7 +15,7 @@
 #define MOT_STEP_TIME_MAX 150000
 #define MOT_STEP_TIME_MIN    100
 #define CONVERSION_FACTOR 150000
-#define MOT_RAMP              10
+#define MOT_RAMP              15
 #define RPM_MAX             1500
 #define RPM_MIN                1
 
@@ -25,21 +25,19 @@ bool mot_b_timer_callback(struct repeating_timer *t);
 
 class Motors {
   private:
-	  uint32_t a_rpm = RPM_MIN;
-	  uint32_t b_rpm = RPM_MIN;
     bool a_dir = true;
     bool b_dir = true;
-	  int ramp = 20;
-	  uint32_t calc_step_time(uint32_t rpm, uint32_t old_step_time, uint16_t step_width, bool up);
+	  int mot_ramp = MOT_RAMP;
+	  uint32_t calc_step_time(uint32_t current_step_time, bool up);
+    uint32_t a_step_time_target = MOT_STEP_TIME_MAX, b_step_time_target = MOT_STEP_TIME_MAX;
 
   public:
     bool a_enabled = false;
     bool b_enabled = false;
     bool a_power = false;
     bool b_power = false;
-
   	uint32_t a_step_time = MOT_STEP_TIME_MAX, b_step_time = MOT_STEP_TIME_MAX;
-  	uint32_t a_step_time_target = a_step_time, b_step_time_target = b_step_time;
+  
     void init(void);
   	void set_a_enable(bool status);
   	void set_b_enable(bool status);
@@ -61,6 +59,5 @@ class Motors {
     uint32_t get_b_rpm(void);
 	
 };
-
 
 #endif

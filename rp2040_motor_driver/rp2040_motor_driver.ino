@@ -35,6 +35,7 @@ int i = 0;
 volatile uint8_t job_flags = 0b00000000;
 int power_down_bt_status = 0;
 
+
 //-------------------------------------------------------------------------
 // Adds a char from the serial interface to the input buffer. 
 // Returns false, unless a end-of-line character is detected.
@@ -333,6 +334,7 @@ void setup() {
   delay(100);
 }
 
+long cnt=0;
 
 //-------------------------------------------------------------------------
 void loop() {
@@ -346,10 +348,11 @@ void loop() {
 
   if (job_flags & (1 << JF_REFRESH_BAT_VOLTAGE)) {
     job_flags &= ~(1 << JF_REFRESH_BAT_VOLTAGE);
-    if (bat.run_adc()) 
+    if (bat.run_adc()) { 
       display.show_voltage(bat.get_voltage());
-    if (bat.get_status() == STATUS_BAT_SHUTDOWN) 
-      bat.request_bat_shutdown();
+    // if (bat.get_status() == STATUS_BAT_SHUTDOWN) 
+    //  bat.request_bat_shutdown();
+    }
     motors.check_step_time_a();
     motors.check_step_time_b();
   }

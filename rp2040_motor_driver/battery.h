@@ -23,7 +23,7 @@
 // Shutdown
 #define WAIT_SHUTDOWN                        10
 #define WAIT_SHUTDOWN_REQUEST_CONFIRMATION    5
-#define FORCE_SHUTDOWN_WAIT                 150
+#define FORCE_SHUTDOWN_WAIT                 100
 
 // status
 #define STATUS_OK                 0   // 'OK'
