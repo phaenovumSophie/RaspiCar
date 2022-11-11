@@ -58,7 +58,7 @@ class IoCtrl:
         time.sleep(0.5)
         self.send_ser(" ");
         time.sleep(0.5)
-        self.send_ser("DTRaspi connected")
+        self.send_ser("DMRaspi connected")
         # starting thread
         self._t = threading.Thread(target = self._read_status)
         self._t.start()       
