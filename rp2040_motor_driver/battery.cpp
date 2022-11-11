@@ -25,7 +25,7 @@ bool Battery::run_adc(void) {
     if (voltage < BAT_EXTERNAL) voltage = 0;
     adc_sum = 0;
     cnt_show += 1;    
-    if (status < 4) {    // if status unequal 'SR' and 'SX'
+    if (status < 3) {    // if status unequal 'SR' and 'SX' and 'BE'
       if (voltage > BAT_LOW) status = 0; // 'OK'
       else if (voltage > BAT_SHUTDOWN) status = 1; // 'BL' battery low
       else if (voltage > BAT_EXTERNAL) status = 2; // 'BS' battery shutdown
@@ -119,7 +119,7 @@ void Battery::request_shutdown(void) {
   if (cnt_shutdown_request_wait == 0) {
     display.print_msg("Shutdown - are you sure?");
   } else {
-    status = 3;
+    status = 4;
     display.print_msg("Shutdown requested");    
   }
   cnt_shutdown_request_wait = WAIT_SHUTDOWN_REQUEST_CONFIRMATION;
@@ -129,7 +129,7 @@ void Battery::request_shutdown(void) {
 void Battery::start_shutdown(void) {
   extern LCD_Display display;
   
-  status = 4;
+  status = 2;
   cnt_shutdown = WAIT_SHUTDOWN;
   display.print_msg("Shutdown ...");
 }
@@ -139,7 +139,7 @@ void Battery::start_shutdown(void) {
 void Battery::request_bat_shutdown(void) {
   extern LCD_Display display;
 
-  status = 3;
+  status = 2;  // 'SR'
   display.print_msg("Battery shutdown");    
   cnt_shutdown_request_wait = WAIT_SHUTDOWN_REQUEST_CONFIRMATION;   
 }
