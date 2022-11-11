@@ -111,7 +111,7 @@ void LCD_Display::clear(void) {
   lcd.print("                    ");
   lcd.setCursor(0, 1);
   lcd.print("                    ");
-  lcd.setCursor(0, 3);
+  lcd.setCursor(0, 2);
   lcd.print("                    ");
 }
 
@@ -120,11 +120,6 @@ void LCD_Display::print_title(const char buf[]) {
   int l = strlen(buf);
   lcd.setCursor(0, 0);
   for (int i = 0; i < 20; ++i) {
-    if (i < l) lcd.write(buf[i]);
-    else lcd.write(' ');
-  }
-  lcd.setCursor(0, 1);
-  for (int i = 20; i < 40; ++i) {
     if (i < l) lcd.write(buf[i]);
     else lcd.write(' ');
   }

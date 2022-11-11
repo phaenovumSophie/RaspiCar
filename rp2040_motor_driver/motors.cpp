@@ -91,6 +91,9 @@ void Motors::check_step_time_a(void) {
     if (a_step_time > a_step_time_target) a_step_time = a_step_time_target;
     mot_a_timer.delay_us = a_step_time;
   }
+  if (a_step_time >= MOT_STEP_TIME_MAX) {
+    set_a_enable(false);
+  }
 }
 
 //----------------------------------------------------------------------
@@ -103,6 +106,9 @@ void Motors::check_step_time_b(void) {
     b_step_time = calc_step_time(b_step_time, false);
     if (b_step_time > b_step_time_target) b_step_time = b_step_time_target;
     mot_b_timer.delay_us = b_step_time;
+  }
+    if (b_step_time >= MOT_STEP_TIME_MAX) {
+    set_b_enable(false);
   }
 }
 
@@ -148,7 +154,6 @@ void Motors::set_b_steptime(uint32_t steptime) {
 void Motors::set_a_rpm(uint32_t rpm) {
   if (rpm == 0) {
     a_step_time_target = MOT_STEP_TIME_MAX;
-    a_enabled = false;
   } else {
     a_step_time_target = CONVERSION_FACTOR / rpm;
     if (a_step_time_target < MOT_STEP_TIME_MIN)
@@ -156,7 +161,6 @@ void Motors::set_a_rpm(uint32_t rpm) {
     else if (a_step_time_target > MOT_STEP_TIME_MAX)
       a_step_time_target = MOT_STEP_TIME_MAX;
     a_enabled = true;
-    set_a_power(true);
   }
 }
 
@@ -164,7 +168,6 @@ void Motors::set_a_rpm(uint32_t rpm) {
 void Motors::set_b_rpm(uint32_t rpm) {
   if (rpm == 0) {
     b_step_time_target = MOT_STEP_TIME_MAX;
-    b_enabled = false;
   } else {
     b_step_time_target = CONVERSION_FACTOR / rpm;
     if (b_step_time_target < MOT_STEP_TIME_MIN)
@@ -172,7 +175,6 @@ void Motors::set_b_rpm(uint32_t rpm) {
     else if (b_step_time_target > MOT_STEP_TIME_MAX)
       b_step_time_target = MOT_STEP_TIME_MAX;
     b_enabled = true;
-    set_b_power(true);
   }
 }
 

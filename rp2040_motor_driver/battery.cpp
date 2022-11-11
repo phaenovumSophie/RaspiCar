@@ -21,14 +21,15 @@ bool Battery::run_adc(void) {
   cnt_adc += 1;
   if (cnt_adc > 16) {
     cnt_adc = 0;
-    voltage = (uint16_t) (100*(adc_sum * ADC_REF * BATTERY_DIVIDER / (ADC_RANGE * 16) + BATTERY_TL431_OFFSET));
-    if (voltage < 900) voltage = 0;
+    voltage = (uint16_t) (100*(adc_sum * ADC_REF * BAT_DIVIDER / (ADC_RANGE * 16) + BAT_TL431_OFFSET));
+    if (voltage < BAT_EXTERNAL) voltage = 0;
     adc_sum = 0;
     cnt_show += 1;    
-    if (status < 3) {
-      if (voltage > BAT_LOW) status = 0;
-      else if (voltage > BAT_SHUTDOWN) status = 1;
-      else status = 2;
+    if (status < 4) {    // if status unequal 'SR' and 'SX'
+      if (voltage > BAT_LOW) status = 0; // 'OK'
+      else if (voltage > BAT_SHUTDOWN) status = 1; // 'BL' battery low
+      else if (voltage > BAT_EXTERNAL) status = 2; // 'BS' battery shutdown
+      else status = 3; // 'BE' battery external
     }
   }
 
@@ -88,6 +89,9 @@ void Battery::get_full_status(char buf[]) {
       break;
     case STATUS_BAT_SHUTDOWN: 
       strcat(buf, ",SB");
+      break;
+    case STATUS_BAT_EXTERNAL:
+      strcat(buf, ",BE");
       break;
     case STATUS_SHUTDOWN_REQUESTED: 
       strcat(buf, ",SR");

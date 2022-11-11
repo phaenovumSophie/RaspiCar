@@ -13,15 +13,16 @@
 #define POWER_DOWN_BT    11      // user button requesting system shutdown
 
 // ADC
-#define BATTERY_TL431_OFFSET  8.55
-#define BATTERY_DIVIDER       1.88   // may need to be adjusted according to R2/R3
+#define BAT_TL431_OFFSET      8.55
+#define BAT_DIVIDER           1.88   // may need to be adjusted according to R2/R3
 #define ADC_RANGE             1024
 #define ADC_REF               3.24
 #define BAT_LOW               1050
 #define BAT_SHUTDOWN           950
+#define BAT_EXTERNAL           890
 
 // Shutdown
-#define WAIT_SHUTDOWN                        10
+#define WAIT_SHUTDOWN                         6
 #define WAIT_SHUTDOWN_REQUEST_CONFIRMATION    5
 #define FORCE_SHUTDOWN_WAIT                 100
 
@@ -29,8 +30,9 @@
 #define STATUS_OK                 0   // 'OK'
 #define STATUS_BAT_LOW            1   // 'BL'
 #define STATUS_BAT_SHUTDOWN       2   // 'BS'
-#define STATUS_SHUTDOWN_REQUESTED 3   // 'SR'
-#define STATUS_SHUTDOWN_ACTIVE    4   // 'SX'
+#define STATUS_BAT_EXTERNAL       3   // 'BE'
+#define STATUS_SHUTDOWN_REQUESTED 4   // 'SR'
+#define STATUS_SHUTDOWN_ACTIVE    5   // 'SX'
 
 // Job flags
 #define JF_REFRESH_BAT_VOLTAGE 0
