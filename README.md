@@ -24,23 +24,23 @@ Arduino files for the motor driver:
 - battery.cpp, battery.h: class to provide battery and power management
 
 List of motor commands:
-The Raspberry Pi sends commands via the serial interface and receives responses. This can easily by tested with a standard terminal tool (e.g. PUTTY).
+The Raspberry Pi sends commands via the serial interface and receives responses. This can easily by tested via a standard terminal tool (e.g. PUTTY).
 - ME0,0 / ME1,1  - disables or enables motor A and B
 - MP0,0 / MP1,1  - switches motor A and B on or off
 - MD0,0 / MD1,1  - sets the direction of the motor (1 -> forward, 0 -> backward)
 - MR200,300 - sets the speed of the motors in rounds per minute. The range is 0 to 1500.
-- DC - clears the display
+- DC - clears the display (title and message)
 - DT - prints a title of up to 0 characters on line 1 of the display (maximum 20 characters)
 - DM - prints a message of up to 40 character on line 2 and 3 of the display
 - BV - returns the current battery voltage
 - BS - returns the battery voltage and the system status, separated by comma 
 
 List of system status:
-- OK - (0)
-- BL - (1) Battery Low - battery below 10.5V
-- BS - (2) Battery shutdown - battery below 9.5V. The system should shutdown immediately
-- SR - (3) shutdown requested by the user
-- SX - (4) shutdown active. The rp2040 will power off the entire system within 10 seconds
-
+  - 0 - STATUS_OK                   'OK' - all fine
+  - 1 - STATUS_BAT_LOW              'BL' - Battery low, voltage below 10.5V
+  - 2 - STATUS_BAT_SHUTDOWN         'BS' - Battery very low, shutdown requested due to low power, waiting for Raspi to respond
+  - 3 - STATUS_BAT_EXTERNAL         'BE  - System running on 5V external power
+  - 4 - STATUS_SHUTDOWN_REQUESTED   'SR' - Shutdwon requested by user, waiting for Raspi to respond
+  - 5 - STATUS_SHUTDOWN_ACTIVE      'SX' - Shutdown in progress, power will be shut less than 10 secs
 
 SLW October 2022
