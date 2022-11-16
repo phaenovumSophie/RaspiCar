@@ -356,6 +356,4 @@ void loop() {
     motors.check_step_time_a();
     motors.check_step_time_b();
   }
-  
-  delay(10);
 }
