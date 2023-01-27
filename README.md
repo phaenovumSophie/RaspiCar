@@ -34,6 +34,8 @@ The Raspberry Pi sends commands via the serial interface and receives responses.
 - DM - prints a message of up to 40 character on line 2 and 3 of the display
 - BV - returns the current battery voltage
 - BS - returns the battery voltage and the system status, separated by comma 
+(only for motor driver): - send.ser("DS7,2") - sets cursor on display
+                         - send.ser("DP") - writes message on display
 
 List of system status:
   - 0 - STATUS_OK                   'OK' - all fine
