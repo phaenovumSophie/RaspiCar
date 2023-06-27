@@ -101,7 +101,7 @@ class RaspiCarSocket:
     def get_stats(self):
         cnt = len(self._latency)
         if cnt > 0:
-            return cnt, self._timeout_cnt, \
+            return cnt, self._timeout_sum, \
                    round(min(self._latency) * 1000, 1), round(sum(self._latency) * 1000 / cnt, 1), round(max(self._latency) * 1000, 1)
         else:
             return 0, cnt, self._timeout_cnt, 0.0, 0.0, 0.0
