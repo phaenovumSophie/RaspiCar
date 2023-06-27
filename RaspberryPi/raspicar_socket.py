@@ -66,10 +66,9 @@ class RaspiCarSocket:
         
         
     def get_data(self):
-        start_time = time.time()
-        time.sleep(0.1)
-        self._raspi_socket.sendto(b'd', (self._server_ip_addr, self._port_no))
         success = True
+        start_time = time.time()
+        self._raspi_socket.sendto(b'd', (self._server_ip_addr, self._port_no))
         try:
             data, _ = self._raspi_socket.recvfrom(32)
             self._latency.append(time.time() - start_time)
