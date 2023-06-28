@@ -9,6 +9,7 @@ File: raspicar.py
 SLW 20-06-2023
 """
 
+import os
 import time
 import ydlidar_x2
 
@@ -22,19 +23,23 @@ BT_YELLOW = 4
 BT_GREEN = 2
 BT_BLUE = 1
 
+# Working directory
+workdir = os.path.join("/home", "stela", "Python", "RaspiCar")
+
 
 class RaspiCar:
     def __init__(self):
         # Operating values
-        self.automode = False
-        self.stop_system = False
-        self.old_buttons = 0
-        self.lid_is_active = False
+        self._automode = False
+        self._stop_system = False
+        self._shutdown = False
+        self._old_buttons = 0
+        self._lid_is_active = False
         # IoCtrl
         self.io = raspicar_ioctrl.IoCtrl()
         self.io.clear_display()
         self.io.send_msg("RaspiCar 0.4")
-        time.sleep(0.1)
+        time.sleep(0.4)
         # LiDAR
         self.io.send_msg("Initiating LiDAR")
         self.lid = ydlidar_x2.YDLidarX2('/dev/serial0')
@@ -48,7 +53,8 @@ class RaspiCar:
         self.io.send_msg("Starting socket")
         self.sck = raspicar_socket.RaspiCarSocket()
         if not self.sck.okay:
-            self.stop_system = True
+            self.io.send_msg("Socket failure!")
+            self._stop_system = True
             self.io.set_led_red(True)
         else:
             self.sck.send_msg("RaspiCar connected")
@@ -56,24 +62,25 @@ class RaspiCar:
         
         
     def run(self):
-        while not self.stop_system:
-            # Get input from controller
+        while not self._stop_system:
+            # Get input from the controller
             success, buttons, x, y = self.sck.get_data()
             if not self.sck.okay:
-                self.stop_system = True
+                self.io.send_msg("Socket no connection!")
+                self._stop_system = True
                 self.io.set_led_red(True)
                 break
             if success:
                 self.io.set_led_red(False)
-                if buttons > 0 and buttons != self.old_buttons:
+                if buttons > 0 and buttons != self._old_buttons:
                     self._check_buttons(buttons)
-                self.old_buttons = buttons
-                if not self.automode:
+                self._old_buttons = buttons
+                if not self._automode:
                     self.mot.run(x, y)
             else:
                 self.io.set_led_red(True)
-            # get input from LiDAR
-            if self.lid_is_active and self.lid.available:
+            # Get input from the LiDAR
+            if self._lid_is_active and self.lid.available:
                 sectors = self.lid.get_sectors40()
                 print(sectors[18 : 23])
                 
@@ -82,9 +89,12 @@ class RaspiCar:
                 
     def _check_buttons(self, buttons):
         if buttons == (BT_BLUE | BT_GREEN) or self.io.shutdown:
-            self.stop_system = True
+            self._stop_system = True
+        elif buttons == (BT_BLUE | BT_YELLOW):
+            self._stop_system = True
+            self._shutdown = True
         elif buttons == BT_RED:
-            if self.lid_is_active:
+            if self._lid_is_active:
                 self.stop_lid()
             else:
                 self.start_lid()
@@ -96,11 +106,11 @@ class RaspiCar:
         time.sleep(0.2)
         self.lid.start_scan()
         time.sleep(0.5)
-        self.lid_is_active = True
+        self._lid_is_active = True
         
 
     def stop_lid(self):
-        self.lid_is_active = False
+        self._lid_is_active = False
         #self.socket_send_msg("Stopping LiDAR")
         self.lid.stop_scan()
         time.sleep(0.3)
@@ -113,7 +123,7 @@ class RaspiCar:
         self.io.send_msg("Stopping motors")
         self.mot.stop()
         time.sleep(0.1)
-        if self.lid_is_active:
+        if self._lid_is_active:
             self.io.send_msg("Stopping LiDAR")
             self.stop_lid()
         self.io.send_msg("Closing io_ctrl")
@@ -131,8 +141,17 @@ class RaspiCar:
         self.sck.close()
         time.sleep(0.1)
         
-#--------------------------------------------------------------------------------------------------
         
+    @property
+    def shutdown(self):
+        return self._shutdown
+    
+        
+#--------------------------------------------------------------------------------------------------
+
+# set working directory
+os.chdir(workdir)
+
 rc = RaspiCar()
 
 try:
@@ -141,10 +160,22 @@ except KeyboardInterrupt:
     pass
 
 stats = rc.sck.get_stats()
-rc.close()
-
+print()
 print("Latency:")
 print("  Count:  {:d} (lost: {:d})".format(stats[0], stats[1]))
 print("  Timing: {:.1f} - {:.1f} - {:.1f} ms".format(stats[2], stats[3], stats[4]))
 print()
-print("Done")
+
+if rc.shutdown:
+    print("Preparing for shutdown")
+    rc.io.send_msg("Shutting  down ...")
+    rc.io.send_ser("BX")
+    rc.close()
+    time.sleep(0.3)
+    os.popen("sudo shutdown -h now").read()
+
+else:
+    rc.close()
+    print("Done")
+
+    # program close with shutdown

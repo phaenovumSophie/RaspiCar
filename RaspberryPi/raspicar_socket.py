@@ -11,6 +11,7 @@ SLW 16-06-2023
 import time
 import socket
 import subprocess
+import os
 
 
 class RaspiCarSocket:
@@ -19,7 +20,7 @@ class RaspiCarSocket:
         self._port_no = 12000
         self._latency = []
         self._timeout_cnt = 0
-        self._max_timeout_cnt = 5
+        self._max_timeout_cnt = 10
         self._timeout_sum = 0
         # Joystick calibration data
         self._x_midpoint = 455
@@ -30,9 +31,7 @@ class RaspiCarSocket:
         self._y_mute = 15
         # Read expected IP addresses
         if self._read_ip_addr():
-            self._ssid = subprocess.check_output(['sudo', 'iwgetid']).decode().split(':')[1]
-            self._ssid = self._ssid.strip('\n')
-            self._ssid = self._ssid.strip('"')
+            self._ssid = self._get_ssid()
             self._server_ip_addr = self._expected_server_ip_addr[self._ssid]
             self._raspi_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self._raspi_socket.settimeout(0.5)
@@ -40,6 +39,13 @@ class RaspiCarSocket:
         else:
             self._okay = False
             
+        
+    def _get_ssid(self):
+        ssid = subprocess.check_output(['sudo', 'iwgetid']).decode().split(':')[1]
+        ssid = ssid.strip('\n')
+        ssid = ssid.strip('"')
+        return ssid
+        
         
     def _read_ip_addr(self):
         """ read expected server IP addresses """
@@ -66,10 +72,9 @@ class RaspiCarSocket:
         
         
     def get_data(self):
-        start_time = time.time()
-        time.sleep(0.1)
-        self._raspi_socket.sendto(b'd', (self._server_ip_addr, self._port_no))
         success = True
+        start_time = time.time()
+        self._raspi_socket.sendto(b'd', (self._server_ip_addr, self._port_no))
         try:
             data, _ = self._raspi_socket.recvfrom(32)
             self._latency.append(time.time() - start_time)
@@ -102,7 +107,7 @@ class RaspiCarSocket:
     def get_stats(self):
         cnt = len(self._latency)
         if cnt > 0:
-            return cnt, self._timeout_cnt, \
+            return cnt, self._timeout_sum, \
                    round(min(self._latency) * 1000, 1), round(sum(self._latency) * 1000 / cnt, 1), round(max(self._latency) * 1000, 1)
         else:
             return 0, cnt, self._timeout_cnt, 0.0, 0.0, 0.0
