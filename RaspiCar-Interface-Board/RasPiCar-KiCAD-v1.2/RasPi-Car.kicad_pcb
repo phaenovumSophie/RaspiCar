@@ -6469,7 +6469,7 @@
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 8c7374ba-694c-4647-838c-85b88901cf73)
     )
-    (fp_text value "IRLML6401" (at 0 2.4) (layer "F.SilkS")
+    (fp_text value "IRLML2244" (at 0 2.4) (layer "F.SilkS")
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 6bae8834-9f29-4c96-b0f6-9475efc11032)
     )

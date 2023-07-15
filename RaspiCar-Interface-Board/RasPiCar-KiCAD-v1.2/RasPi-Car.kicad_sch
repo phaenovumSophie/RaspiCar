@@ -5599,7 +5599,7 @@
     (property "Reference" "Q2" (at 217.805 50.3682 90)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Value" "IRLML6401" (at 217.805 52.6796 90)
+    (property "Value" "IRLML2244" (at 217.805 52.6796 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "Package_TO_SOT_SMD:SOT-23" (at 215.9 53.975 0)
