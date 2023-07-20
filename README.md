@@ -28,7 +28,7 @@ The Raspberry Pi sends commands via the serial interface and receives responses.
 - ME0,0 / ME1,1  - disables or enables motor A and B
 - MP0,0 / MP1,1  - switches motor A and B on or off
 - MD0,0 / MD1,1  - sets the direction of the motor (1 -> forward, 0 -> backward)
-- MR200,300 - sets the speed of the motors in rounds per minute. The range is 0 to 1500.
+- MR<l>,<r> - sets the speed of the motors in rounds per minute. The range is 0 to 1500. Example: "MR200,500"
 - DC - clears the display (title and message)
 - DT - prints a title of up to 0 characters on line 1 of the display (maximum 20 characters)
 - DM - prints a message of up to 40 character on line 2 and 3 of the display
@@ -41,6 +41,6 @@ List of system status:
   - 2 - STATUS_BAT_SHUTDOWN         'BS' - Battery very low, shutdown requested due to low power, waiting for Raspi to respond
   - 3 - STATUS_BAT_EXTERNAL         'BE  - System running on 5V external power
   - 4 - STATUS_SHUTDOWN_REQUESTED   'SR' - Shutdwon requested by user, waiting for Raspi to respond
-  - 5 - STATUS_SHUTDOWN_ACTIVE      'SX' - Shutdown in progress, power will be shut less than 10 secs
+  - 5 - STATUS_SHUTDOWN_ACTIVE      'SX' - Shutdown in progress, power will be shut in less than 10 secs
 
 SLW October 2022
